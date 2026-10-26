@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmácia Medivance - A Sua Saúde em Primeiro Lugar</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .badge-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen flex flex-col justify-between">
+
+    <!-- HEADER -->
+    <header class="bg-brand-900 text-white shadow-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 py-3.5 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchView('store')">
+                <div class="bg-brand-500 p-2.5 rounded-xl text-white shadow-inner flex items-center justify-center">
+                    <i class="fa-solid fa-prescription-bottle-medical text-2xl"></i>
+                </div>
+                <div>
+                    <span class="text-xl font-extrabold tracking-tight block leading-none">MEDIVANCE</span>
+                    <span class="text-[10px] text-brand-100 font-semibold tracking-wider uppercase">FARMÁCIA DIGITAL</span>
+                </div>
+            </div>
+
+            <!-- Botão Catálogo e Carrinho -->
+            <div class="flex items-center space-x-3">
+                <button onclick="scrollToCatalog()" class="hidden sm:flex items-center gap-2 bg-brand-800 hover:bg-brand-700 text-white text-xs font-bold px-4 py-2.5 rounded-full border border-brand-700 transition">
+                    <i class="fa-solid fa-box-archive"></i>
+                    <span>Catálogo de Produtos</span>
+                </button>
+                <button onclick="toggleCartDrawer()" class="relative bg-brand-800 hover:bg-brand-700 text-white px-4 py-2.5 rounded-full transition flex items-center gap-2 text-xs font-bold border border-brand-700">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>Carrinho</span>
+                    <span id="cart-badge" class="bg-red-500 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="flex-grow">
+        <section id="store-view" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8">
+            
+            <!-- HERO / BANNER DESTAQUE (Exatamente como na foto) -->
+            <div class="bg-gradient-to-r from-brand-900 via-brand-800 to-emerald-900 text-white rounded-3xl p-6 sm:p-10 shadow-xl relative overflow-hidden flex flex-col lg:flex-row justify-between items-center gap-6">
+                <div class="space-y-3 max-w-xl">
+                    <div class="inline-flex items-center gap-2 bg-brand-500/20 text-brand-100 text-xs font-bold px-3.5 py-1 rounded-full border border-brand-500/30">
+                        <i class="fa-solid fa-bolt badge-pulse text-amber-300"></i>
+                        <span>Atendimento Rápido & Entregas</span>
+                    </div>
+                    <h1 class="text-3xl sm:text-4xl font-black tracking-tight leading-tight">Sua Saúde e Bem-Estar em Primeiro Lugar</h1>
+                    <p class="text-brand-100 text-xs sm:text-sm leading-relaxed opacity-90">Encomende medicamentos, suplementos e produtos de cuidados pessoais com segurança e rapidez em Angola.</p>
+                </div>
+
+                <!-- Caixa de Promoção Lateral -->
+                <div class="bg-brand-950/70 border border-brand-700/60 backdrop-blur-md rounded-2xl p-5 text-white max-w-xs w-full shadow-lg space-y-3">
+                    <div class="flex items-center gap-2 text-amber-400 font-bold text-sm">
+                        <i class="fa-solid fa-tag"></i>
+                        <span>Super Promoção da Semana!</span>
+                    </div>
+                    <p class="text-xs text-gray-300 leading-relaxed">Aproveite até 30% de desconto em vitaminas e suplementos selecionados.</p>
+                    <button onclick="scrollToCatalog()" class="w-full bg-amber-400 hover:bg-amber-300 text-brand-950 font-black py-2 rounded-xl text-xs transition shadow-md">
+                        Ver Promoções
+                    </button>
+                </div>
+            </div>
+
+            <!-- SECÇÃO DE PRODUTOS -->
+            <div class="space-y-4" id="catalogo-section">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                    <div>
+                        <h2 class="text-xl font-black text-gray-900 flex items-center gap-2">
+                            <i class="fa-solid fa-boxes-stacked text-brand-600"></i>
+                            <span>Nossos Produtos</span>
+                        </h2>
+                        <p class="text-xs text-gray-500">Explore a nossa seleção completa de produtos para a sua saúde</p>
+                    </div>
+                    <span id="product-count-label" class="text-xs font-bold text-brand-700 bg-brand-50 px-3 py-1 rounded-full border border-brand-200 w-fit">8 Produtos</span>
+                </div>
+
+                <!-- Barra de Pesquisa e Filtros (Categorias) -->
+                <div class="space-y-3">
+                    <div class="relative max-w-md">
+                        <input type="text" id="store-search-input" onkeyup="filterProducts()" placeholder="Pesquisar produto..." class="w-full pl-10 pr-4 py-2.5 bg-white text-gray-800 placeholder-gray-400 text-sm rounded-2xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-brand-500 shadow-sm">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-gray-400 text-sm"></i>
+                    </div>
+
+                    <div class="flex items-center space-x-2 overflow-x-auto pb-2 scrollbar-none" id="categories-list">
+                        <!-- Gerado via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- GRELHA DE PRODUTOS -->
+            <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
+                <!-- Gerado via JS -->
+            </div>
+
+            <div id="no-products-msg" class="hidden text-center py-16 bg-white rounded-3xl shadow-sm border border-gray-100">
+                <i class="fa-solid fa-box-open text-4xl text-gray-300 mb-2"></i>
+                <p class="text-gray-500 font-medium text-sm">Nenhum produto encontrado com os filtros selecionados.</p>
+                <button onclick="resetFilters()" class="mt-2 text-xs text-brand-600 font-bold hover:underline">Limpar filtros</button>
+            </div>
+        </section>
+
+        <!-- PAINEL DO VENDEDOR -->
+        <section id="seller-view" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+            <div class="bg-white rounded-3xl p-6 shadow-sm border border-gray-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <span class="bg-emerald-100 text-emerald-800 text-xs font-bold px-3 py-1 rounded-full">Painel do Vendedor</span>
+                    <h1 class="text-2xl font-bold text-gray-900 mt-1">Gestão de Loja & Inventário</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="openProductModal()" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-2xl text-xs font-bold transition flex items-center gap-2 shadow-sm">
+                        <i class="fa-solid fa-plus"></i>
+                        <span>Adicionar Produto</span>
+                    </button>
+                    <button onclick="exitSellerPanel()" class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-2.5 rounded-2xl text-xs font-bold transition">
+                        <span>Sair do Painel</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow-sm border border-gray-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-50 text-xs font-bold text-gray-500 uppercase border-b border-gray-200">
+                                <th class="py-4 px-6">Produto</th>
+                                <th class="py-4 px-6">Categoria</th>
+                                <th class="py-4 px-6">Preço (Kz)</th>
+                                <th class="py-4 px-6">Stock</th>
+                                <th class="py-4 px-6 text-right">Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="seller-products-table" class="divide-y divide-gray-200 text-sm">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- RODAPÉ -->
+    <footer class="bg-gray-900 text-gray-400 text-xs py-8 border-t border-gray-800 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div>
+                <span class="text-white font-bold text-sm block mb-1">FARMÁCIA MEDIVANCE</span>
+                <p>Luanda, Angola</p>
+                <p class="mt-1">Tel: +244 923 580 503</p>
+            </div>
+            <div>
+                <span class="text-white font-bold text-sm block mb-1">Apoio ao Cliente</span>
+                <p>Contacto: medivance.lda@gmail.com</p>
+            </div>
+            <div class="flex flex-col justify-between items-start md:items-end">
+                <p>&copy; 2026 Medivance, Lda. Todos os direitos reservados.</p>
+                <button onclick="openSellerAuthModal()" class="mt-3 text-gray-500 hover:text-gray-300 transition flex items-center gap-1">
+                    <i class="fa-solid fa-lock text-[10px]"></i>
+                    <span>Área Restrita (Vendedor)</span>
+                </button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL DE ACESSO DO VENDEDOR (COM OLHO E SEM DICA) -->
+    <div id="modal-seller-auth" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4">
+            <div class="text-center">
+                <div class="bg-brand-100 text-brand-800 w-12 h-12 rounded-2xl flex items-center justify-center mx-auto mb-2">
+                    <i class="fa-solid fa-user-shield text-xl"></i>
+                </div>
+                <h3 class="text-lg font-bold text-gray-900">Acesso Restrito ao Vendedor</h3>
+                <p class="text-xs text-gray-500 mt-0.5">Insira a sua palavra-passe para aceder ao painel.</p>
+            </div>
+
+            <div class="relative">
+                <input type="password" id="auth-password-input" placeholder="Palavra-passe" class="w-full p-3.5 pr-10 border border-gray-300 rounded-2xl text-center text-sm focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                <button type="button" onclick="togglePassVisibility('auth-password-input', 'eye-pass-auth')" class="absolute right-3.5 top-4 text-gray-400 hover:text-gray-600">
+                    <i id="eye-pass-auth" class="fa-solid fa-eye"></i>
+                </button>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="closeSellerAuthModal()" class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-3 rounded-2xl font-bold text-sm transition">Cancelar</button>
+                <button onclick="authenticateSeller()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-2xl font-bold text-sm transition shadow-sm">Entrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL DE EDIÇÃO DE PRODUTO -->
+    <div id="modal-product-editor" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+            <div class="flex justify-between items-center border-b pb-3">
+                <h3 id="modal-product-title" class="text-lg font-bold text-gray-900">Adicionar Novo Produto</h3>
+                <button onclick="closeProductModal()" class="text-gray-400 hover:text-gray-600"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+
+            <form id="product-form" onsubmit="handleProductSubmit(event)" class="space-y-3 text-sm">
+                <input type="hidden" id="prod-id">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Nome do Produto</label>
+                    <input type="text" id="prod-name" required class="w-full p-3 border rounded-2xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Preço (Kz)</label>
+                        <input type="number" id="prod-price" required step="1" class="w-full p-3 border rounded-2xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold text-gray-600 mb-1">Stock</label>
+                        <input type="number" id="prod-stock" required min="0" class="w-full p-3 border rounded-2xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Categoria</label>
+                    <select id="prod-category" required class="w-full p-3 border rounded-2xl focus:ring-2 focus:ring-brand-500 focus:outline-none bg-white">
+                        <option value="Medicamentos">Medicamentos</option>
+                        <option value="Suplementos">Suplementos</option>
+                        <option value="Cosméticos">Cosméticos</option>
+                        <option value="Higiene">Higiene</option>
+                        <option value="Primeiros Socorros">Primeiros Socorros</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">URL da Imagem</label>
+                    <input type="url" id="prod-image" required class="w-full p-3 border rounded-2xl focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold text-gray-600 mb-1">Descrição</label>
+                    <textarea id="prod-desc" rows="2" class="w-full p-3 border rounded-2xl focus:ring-2 focus:ring-brand-500 focus:outline-none"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-3">
+                    <button type="button" onclick="closeProductModal()" class="bg-gray-100 text-gray-700 px-5 py-2.5 rounded-2xl font-bold">Cancelar</button>
+                    <button type="submit" class="bg-brand-600 text-white px-6 py-2.5 rounded-2xl font-bold shadow-sm">Guardar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- CARRINHO LATERAL -->
+    <div id="cart-drawer" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity">
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-white shadow-2xl flex flex-col justify-between">
+            <div class="p-5 bg-brand-900 text-white flex justify-between items-center">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <h3 class="font-bold text-lg">Carrinho de Compras</h3>
+                </div>
+                <button onclick="toggleCartDrawer()" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div id="cart-items-container" class="p-5 flex-grow overflow-y-auto space-y-4"></div>
+            <div class="p-5 border-t border-gray-100 bg-gray-50 space-y-3">
+                <div class="flex justify-between items-center text-gray-700 font-bold">
+                    <span>Total:</span>
+                    <span id="cart-total-price" class="text-xl font-black text-brand-700">0,00 Kz</span>
+                </div>
+                <button onclick="checkoutWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-3.5 rounded-2xl shadow-md transition flex items-center justify-center gap-2">
+                    <i class="fa-brands fa-whatsapp text-xl"></i>
+                    <span>Finalizar no WhatsApp</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DA APLICAÇÃO -->
+    <script>
+        const DEFAULT_SETTINGS = {
+            password: 'sitemedivance2026',
+            phone: '+244923580503'
+        };
+
+        const INITIAL_PRODUCTS = [
+            { id: '1', name: 'Paracetamol Medivance 500mg', category: 'Medicamentos', price: 1200, stock: 45, image: 'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=500&auto=format&fit=crop&q=60', desc: 'Analgésico e antipirético indicado para alívio de dores leves a moderadas e febre.' },
+            { id: '2', name: 'Vitamina C + Zinco Efervescente 20c', category: 'Suplementos', price: 4500, stock: 28, image: 'https://images.unsplash.com/photo-1577401239170-897942555fb3?w=500&auto=format&fit=crop&q=60', desc: 'Suplemento alimentar fortalecedor do sistema imunitário e ação antioxidante.' },
+            { id: '3', name: 'Ibuprofeno 400mg (20 Comprimidos)', category: 'Medicamentos', price: 2100, stock: 12, image: 'https://images.unsplash.com/photo-1550572017-edd951aa8f72?w=500&auto=format&fit=crop&q=60', desc: 'Anti-inflamatório não esteroide para dores musculares, articulares e inflamações.' },
+            { id: '4', name: 'Creme Hidratante Dermoprotetor 200ml', category: 'Cosméticos', price: 7800, stock: 18, image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?w=500&auto=format&fit=crop&q=60', desc: 'Hidratação profunda para pele sensível e seca com fórmula hipoalergénica.' },
+            { id: '5', name: 'Gel Desinfetante Hidroalcoólico 500ml', category: 'Higiene', price: 1950, stock: 35, image: 'https://images.unsplash.com/photo-1584483766114-2cea6facdf57?w=500&auto=format&fit=crop&q=60', desc: 'Higienização rápida das mãos com proteção antibacteriana eficaz.' },
+            { id: '6', name: 'Kit Primeiros Socorros Completo', category: 'Primeiros Socorros', price: 15500, stock: 8, image: 'https://images.unsplash.com/photo-1603398938378-e54eab446dde?w=500&auto=format&fit=crop&q=60', desc: 'Conjunto essencial de primeiros socorros para emergências e uso doméstico.' },
+            { id: '7', name: 'Multivitamínico A-Z Completo 60 Caps', category: 'Suplementos', price: 8900, stock: 15, image: 'https://images.unsplash.com/photo-1584017911766-d451b3d0e843?w=500&auto=format&fit=crop&q=60', desc: 'Complexo vitamínico completo para energia e vitalidade diária.' },
+            { id: '8', name: 'Amoxicilina 500mg (16 Caps)', category: 'Medicamentos', price: 3200, stock: 22, image: 'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=500&auto=format&fit=crop&q=60', desc: 'Antibiótico de largo espetro para infeção bacteriana sob prescrição médica.' }
+        ];
+
+        let products = JSON.parse(localStorage.getItem('medivance_products')) || INITIAL_PRODUCTS;
+        let settings = DEFAULT_SETTINGS;
+        let cart = JSON.parse(localStorage.getItem('medivance_cart')) || [];
+        let selectedCategory = 'Todos';
+
+        document.addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.shiftKey && (e.key === 'A' || e.key === 'a')) {
+                e.preventDefault();
+                openSellerAuthModal();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderStorefront();
+            updateCartUI();
+        });
+
+        function togglePassVisibility(inputId, eyeIconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(eyeIconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+
+        function switchView(view) {
+            if (view === 'store') {
+                document.getElementById('store-view').classList.remove('hidden');
+                document.getElementById('seller-view').classList.add('hidden');
+            } else if (view === 'seller') {
+                document.getElementById('store-view').classList.add('hidden');
+                document.getElementById('seller-view').classList.remove('hidden');
+                renderSellerTable();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function renderStorefront() {
+            renderCategories();
+            filterProducts();
+        }
+
+        function renderCategories() {
+            const categories = ['Todos', 'Medicamentos', 'Suplementos', 'Cosméticos', 'Higiene', 'Primeiros Socorros'];
+            const container = document.getElementById('categories-list');
+            container.innerHTML = categories.map(cat => `
+                <button onclick="setCategory('${cat}')" class="px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition ${selectedCategory === cat ? 'bg-brand-600 text-white shadow-sm' : 'bg-white text-gray-600 hover:bg-gray-100 border border-gray-200'}">
+                    ${cat}
+                </button>
+            `).join('');
+        }
+
+        function setCategory(cat) {
+            selectedCategory = cat;
+            renderCategories();
+            filterProducts();
+        }
+
+        function filterProducts() {
+            const query = (document.getElementById('store-search-input').value || '').toLowerCase();
+            const filtered = products.filter(p => {
+                const matchesCat = selectedCategory === 'Todos' || p.category === selectedCategory;
+                const matchesSearch = p.name.toLowerCase().includes(query) || (p.desc && p.desc.toLowerCase().includes(query));
+                return matchesCat && matchesSearch;
+            });
+            renderProductsGrid(filtered);
+        }
+
+        function renderProductsGrid(itemsToRender) {
+            const grid = document.getElementById('products-grid');
+            const noProductsMsg = document.getElementById('no-products-msg');
+            const countLabel = document.getElementById('product-count-label');
+
+            countLabel.innerText = `${itemsToRender.length} Produto${itemsToRender.length === 1 ? '' : 's'}`;
+
+            if (itemsToRender.length === 0) {
+                grid.innerHTML = '';
+                noProductsMsg.classList.remove('hidden');
+                return;
+            }
+
+            noProductsMsg.classList.add('hidden');
+            grid.innerHTML = itemsToRender.map(p => `
+                <div class="bg-white rounded-3xl p-4 shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition duration-200">
+                    <div class="space-y-3">
+                        <div class="w-full h-40 rounded-2xl overflow-hidden bg-gray-50 relative">
+                            <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover">
+                            <span class="absolute top-2.5 left-2.5 bg-white/90 backdrop-blur-md text-brand-900 text-[10px] font-extrabold px-2.5 py-1 rounded-lg shadow-sm">${p.category}</span>
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-gray-900 text-sm leading-snug line-clamp-2">${p.name}</h3>
+                            <p class="text-xs text-gray-500 mt-1 line-clamp-2 leading-relaxed">${p.desc || ''}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="pt-3 border-t border-gray-50 mt-3 flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] text-gray-400 font-semibold block uppercase tracking-wider">Preço</span>
+                            <span class="font-black text-brand-700 text-sm">${p.price.toLocaleString('pt-PT', {minimumFractionDigits: 2})} Kz</span>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-[10px] text-gray-400 block font-semibold">Stock: ${p.stock}</span>
+                            <button onclick="addToCart('${p.id}')" class="mt-1 bg-brand-600 hover:bg-brand-700 text-white px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-sm flex items-center gap-1">
+                                <i class="fa-solid fa-plus text-[10px]"></i>
+                                <span>Adicionar</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function addToCart(id) {
+            const prod = products.find(p => p.id === id);
+            if (!prod) return;
+            const existing = cart.find(item => item.id === id);
+            if (existing) { existing.qty += 1; } else { cart.push({ ...prod, qty: 1 }); }
+            saveCart();
+            updateCartUI();
+            toggleCartDrawer(true);
+        }
+
+        function updateCartUI() {
+            const container = document.getElementById('cart-items-container');
+            const badge = document.getElementById('cart-badge');
+            const totalElem = document.getElementById('cart-total-price');
+
+            const totalItems = cart.reduce((acc, i) => acc + i.qty, 0);
+            const totalPrice = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+
+            badge.innerText = totalItems;
+            totalElem.innerText = `${totalPrice.toLocaleString('pt-PT', {minimumFractionDigits: 2})} Kz`;
+
+            if (cart.length === 0) {
+                container.innerHTML = `<p class="text-center text-gray-400 text-sm py-8 font-medium">O seu carrinho está vazio.</p>`;
+                return;
+            }
+
+            container.innerHTML = cart.map(item => `
+                <div class="flex items-center justify-between border-b border-gray-100 pb-3">
+                    <div class="flex items-center gap-3">
+                        <img src="${item.image}" class="w-12 h-12 object-cover rounded-xl bg-gray-50">
+                        <div>
+                            <h4 class="font-bold text-xs text-gray-800 line-clamp-1">${item.name}</h4>
+                            <span class="text-xs text-brand-700 font-black">${(item.price * item.qty).toLocaleString('pt-PT', {minimumFractionDigits: 2})} Kz</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <button onclick="changeCartQty('${item.id}', -1)" class="w-7 h-7 bg-gray-100 rounded-lg text-xs font-bold hover:bg-gray-200">-</button>
+                        <span class="text-xs font-bold">${item.qty}</span>
+                        <button onclick="changeCartQty('${item.id}', 1)" class="w-7 h-7 bg-gray-100 rounded-lg text-xs font-bold hover:bg-gray-200">+</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function changeCartQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) { cart = cart.filter(i => i.id !== id); }
+            saveCart();
+            updateCartUI();
+        }
+
+        function saveCart() { localStorage.setItem('medivance_cart', JSON.stringify(cart)); }
+
+        function toggleCartDrawer(open) {
+            const drawer = document.getElementById('cart-drawer');
+            if (open === true) { drawer.classList.remove('hidden'); }
+            else if (open === false) { drawer.classList.add('hidden'); }
+            else { drawer.classList.toggle('hidden'); }
+        }
+
+        function checkoutWhatsApp() {
+            if (cart.length === 0) return alert('Adicione produtos ao carrinho antes de finalizar.');
+            let msg = `Olá *Farmácia Medivance*, gostaria de fazer a seguinte encomenda:\n\n`;
+            cart.forEach(i => { msg += `• *${i.name}* (x${i.qty}) - ${(i.price * i.qty).toLocaleString('pt-PT', {minimumFractionDigits: 2})} Kz\n`; });
+            const total = cart.reduce((acc, i) => acc + (i.price * i.qty), 0);
+            msg += `\n*Total:* ${total.toLocaleString('pt-PT', {minimumFractionDigits: 2})} Kz\n\nPor favor, confirmem a disponibilidade para entrega.`;
+            window.open(`https://wa.me/244923580503?text=${encodeURIComponent(msg)}`, '_blank');
+        }
+
+        function openSellerAuthModal() {
+            document.getElementById('modal-seller-auth').classList.remove('hidden');
+            document.getElementById('auth-password-input').focus();
+        }
+
+        function closeSellerAuthModal() {
+            document.getElementById('modal-seller-auth').classList.add('hidden');
+            document.getElementById('auth-password-input').value = '';
+        }
+
+        function authenticateSeller() {
+            const input = document.getElementById('auth-password-input').value;
+            if (input === settings.password) {
+                closeSellerAuthModal();
+                switchView('seller');
+            } else {
+                alert('Palavra-passe incorreta!');
+            }
+        }
+
+        function exitSellerPanel() { switchView('store'); }
+
+        function renderSellerTable() {
+            const tbody = document.getElementById('seller-products-table');
+            tbody.innerHTML = products.map(p => `
+                <tr class="hover:bg-gray-50 transition">
+                    <td class="py-4 px-6 flex items-center gap-3">
+                        <img src="${p.image}" class="w-10 h-10 object-cover rounded-xl bg-gray-100">
+                        <div>
+                            <span class="font-bold text-gray-900 block">${p.name}</span>
+                            <span class="text-xs text-gray-400 line-clamp-1">${p.desc || ''}</span>
+                        </div>
+                    </td>
+                    <td class="py-4 px-6"><span class="bg-gray-100 text-gray-700 text-xs px-2.5 py-1 rounded-lg font-bold">${p.category}</span></td>
+                    <td class="py-4 px-6 font-black text-gray-900">${p.price.toLocaleString('pt-PT', {minimumFractionDigits: 2})} Kz</td>
+                    <td class="py-4 px-6 font-semibold">${p.stock} un.</td>
+                    <td class="py-4 px-6 text-right space-x-2">
+                        <button onclick="editProduct('${p.id}')" class="text-brand-600 hover:text-brand-800 text-xs font-bold">Editar</button>
+                        <button onclick="deleteProduct('${p.id}')" class="text-red-500 hover:text-red-700 text-xs font-bold">Eliminar</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openProductModal(id = null) {
+            document.getElementById('modal-product-editor').classList.remove('hidden');
+            if (id) {
+                const p = products.find(prod => prod.id === id);
+                document.getElementById('modal-product-title').innerText = 'Editar Produto';
+                document.getElementById('prod-id').value = p.id;
+                document.getElementById('prod-name').value = p.name;
+                document.getElementById('prod-price').value = p.price;
+                document.getElementById('prod-stock').value = p.stock;
+                document.getElementById('prod-category').value = p.category;
+                document.getElementById('prod-image').value = p.image;
+                document.getElementById('prod-desc').value = p.desc || '';
+            } else {
+                document.getElementById('modal-product-title').innerText = 'Adicionar Novo Produto';
+                document.getElementById('product-form').reset();
+                document.getElementById('prod-id').value = '';
+            }
+        }
+
+        function closeProductModal() { document.getElementById('modal-product-editor').classList.add('hidden'); }
+
+        function handleProductSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('prod-id').value;
+            const newProd = {
+                id: id || Date.now().toString(),
+                name: document.getElementById('prod-name').value,
+                price: parseFloat(document.getElementById('prod-price').value),
+                stock: parseInt(document.getElementById('prod-stock').value),
+                category: document.getElementById('prod-category').value,
+                image: document.getElementById('prod-image').value,
+                desc: document.getElementById('prod-desc').value
+            };
+
+            if (id) {
+                const idx = products.findIndex(p => p.id === id);
+                products[idx] = newProd;
+            } else {
+                products.push(newProd);
+            }
+
+            localStorage.setItem('medivance_products', JSON.stringify(products));
+            closeProductModal();
+            renderSellerTable();
+            renderStorefront();
+        }
+
+        function editProduct(id) { openProductModal(id); }
+
+        function deleteProduct(id) {
+            if (confirm('Tem a certeza que deseja eliminar este produto?')) {
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('medivance_products', JSON.stringify(products));
+                renderSellerTable();
+                renderStorefront();
+            }
+        }
+
+        function resetFilters() {
+            document.getElementById('store-search-input').value = '';
+            setCategory('Todos');
+        }
+
+        function scrollToCatalog() {
+            document.getElementById('catalogo-section').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
